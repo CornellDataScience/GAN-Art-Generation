@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>GAN Art Generation</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+
+    <button type="button">Generate Image</button>
+    <img src="static/test.png" style="display:none;">
+
+    <script>
+
+    let image = d3.select('img');
+    console.log(image.attr('src'))
+
+    const displayImage = async function () {
+        let output = await d3.json('/model');
+        console.log(output);
+        image.style('display', '');
+        image.attr('src', `static/${output}`);
+    }
+
+    let button = d3.select('button');
+    button.on('click', displayImage);
+
+    
+    
+
+    </script>
+</body>
+</html>
+

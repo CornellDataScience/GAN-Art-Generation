@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GAN Art Generation</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <!-- <img src="{{url_for('static', filename=fileName)}}"> -->
+    <svg></svg>
+    <script>
+
+    let svg = d3.select('svg');
+    let output = await d3.json('/model');
+    console.log(output)
+
+    </script>
+</body>
+</html>
+
