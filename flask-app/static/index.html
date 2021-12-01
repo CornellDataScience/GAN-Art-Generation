@@ -4,20 +4,28 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
-
+    <svg></svg>
     <button type="button">Generate Image</button>
-    <img src="static/test.png" style="display:none;">
 
     <script>
+    let fileName = "test.png";
 
-    let image = d3.select('img');
-    console.log(image.attr('src'))
+    // let image = d3.select('img');
+    // console.log(image.attr('src'))
+
+    let svg = d3.select('svg');
 
     const displayImage = async function () {
         let output = await d3.json('/model');
         console.log(output);
-        image.style('display', '');
-        image.attr('src', `static/${output}`);
+        svg.selectAll('image')
+            .data([0])
+            .join('image')
+            .attr('x', 50)
+            .attr('y', 50)
+            .attr('width', 100)
+            .attr('height', 100)
+            .attr('xlink:href', output.output)
     }
 
     let button = d3.select('button');
