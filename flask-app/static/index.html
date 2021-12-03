@@ -4,32 +4,85 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 <body>
+    <h1 style = "text-align: center;">GAN Art Generation</h1>
+
+    <div style = "text-align: center;">
+        <select id = "model" style = "text-align: center; width: 100px; position: relative; left: -10px;"></select>
+        <select id = "inputFile" style = "text-align: center; width: 100px; position: relative; left: -5px;"></select>
+        <button type="button" style = "width: 50px;">Run</button>
+    </div>
     <svg></svg>
-    <button type="button">Generate Image</button>
 
     <script>
     let fileName = "test.png";
 
-    // let image = d3.select('img');
-    // console.log(image.attr('src'))
+    let modelMapping = {"Random": 0, "Monet": 1};
+    let tfrecFiles = ['1072.tfrec', '1085.tfrec', '1086.tfrec', '1090.tfrec', '1204.tfrec'];
 
-    let svg = d3.select('svg');
+    let svg = d3.select('svg')
+                .attr('height', 1000)
+                .attr('width', 1000)
 
-    const displayImage = async function () {
-        let output = await d3.json('/model');
+    const displayImage = async function (model_type, inputFile) {
+        let output = await d3.json(`/model?model_type=${model_type}&input_file=${inputFile}`);
         console.log(output);
+
         svg.selectAll('image')
+            .attr('display', 'none')
+
+        svg.selectAll('image#input')
             .data([0])
             .join('image')
-            .attr('x', 50)
+            .attr('class', 'input')
+            .attr('x', 580)
             .attr('y', 50)
-            .attr('width', 100)
-            .attr('height', 100)
+            .attr('width', 250)
+            .attr('height', 250)
+            .attr('xlink:href', 'input.png')
+            .attr('display', () => {
+                if (model_type === 0) return 'none'
+                return 'block';
+            })
+
+        svg.selectAll('image#output')
+            .data([0])
+            .join('image')
+            .attr('class', 'output')
+            .attr('x', 580)
+            .attr('y', () => {
+                if (model_type === 0) return 50
+                return 350;
+            })
+            .attr('width', 250)
+            .attr('height', 250)
             .attr('xlink:href', output.output)
     }
 
-    let button = d3.select('button');
-    button.on('click', displayImage);
+    let selector = d3.select('select#model')
+
+    selector.selectAll('myOptions')
+            .data(Object.keys(modelMapping))
+            .join('option')
+            .text( d => d )
+            .attr('value', d => d)
+
+    // selector.on('change', function(d) {
+    //     //displayImage(Number(d3.select(this).property('value').slice(-1)) - 1);
+    //     displayImage(modelMapping[d3.select(this).property('value')], selector2.property('value'));
+    // })
+
+    let selector2 = d3.select('select#inputFile')
+
+    selector2.selectAll('myOptions')
+            .data(tfrecFiles)
+            .join('option')
+            .text( d => d )
+            .attr('value', d => d)
+    
+    let button = d3.select('button')
+                   .on('click', () => {
+                    displayImage(modelMapping[selector.property('value')], selector2.property('value'));
+                   })
 
     
     
